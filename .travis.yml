@@ -13,10 +13,6 @@ addons:
 
 node_js:
   - '4'
-env:
-  global:
-  - secure: XYOQnrzQHfEqpv+/Byd4lYQhfJHidGp9EWwqmWt5P6ojVewALzrLd9GVruIbtrVfVQnG9kZoroUmeZtb//V6DwqgSI7j//DmTY/dd4er6OPOFl7f9WjXdvPyB9ixFu31Ujd5ELZLY2L0TAEqSSlDztovNEQlnoL3MrZfI4Dw3ZeV6UzhzI0XYgosjzwLzfg73P4Pz+lWourhhPF95ErnIjqel2rRB/cfyzo0rgA45nDDhzVEYdu/fnVhP/s2j98Wpo2gKccEDXt9Gk6Ovk2kYJfSKj5JmnavU6AiuiRD+Ozo5eyDaohkFVhkU4MVcDhrjSvaKpcYSMvH30dnXQKmNZmE2b79miQELEi1G799elx1k0apRKE/6c/4UqUMCUrAX6Qyin2+3t1P0iY0ir/4vn3cuguhSaJGrU2O8SNNwAN+AXpIGMHJss+zb7kcezI5dzRm4Tf0CPOW3676zXxgxEaqyS91WXMD+jpiiOV8V5I5EZpRd8j8GA6WuUZLLjN2lYLVQdkgPNr58lwHXKUvWouGdn/Md6C+IQuuupkcF5+q78r4WMJu+4eBA1iq5VwnQyLqQeIjlBOGHA3T3xrz8t6J52TovklV14TmIZjLs2uYe0sal39hKWsT9hQyrm5rbeuGbtxrdwYiHyxE4onlXdeOP/Bzooe+YJoZ1pXaa/c=
-  - secure: L/mA5QTZrQYYXI8+0YPqyvPsSJ89le1NWdoPmcHOjA/itwfaVczaULKT7u9tdpWyygFPM6mFv/wd/C+3nJaeHeXIDS/9r7MgJouSiKOKrEMDReyNiwE7KYwCxrIX7XKoN6FuHmJ8K6eifvP6cxNK7MhE2hq4nBgy1K1MYex439x04kKbrR14+EXCrNXytg9mQcHt6BZDxmWF9EOW372f5weBoVaTdU7pQuqE70xVatdfheThwoqD2w2ZMbluqSuD6QLgC+KSQpkcLLeoenwH+worIZswIGqJUVUcbMxGRosjOXwidYPJy+urqWivj3Z6wj1RWha5Ht8i0EXXAWYr9aIQ0qTCS9X+sw7UDeYms35lR2My9BYhCd8nXjrEviVFjrGVkOM2ZEcIEersiKrxAQRqmDzBXA31jb+VklDwXZIppeEbbpAx0WvBgRPeEffuAt6OT65rJsE2VssLYo/vAiuCob1z3X98h2vEqtmngsq/9q0Uk7a/qUahc3utMtHMh28OKVYqzu/OrkAnCJInOgHwDxXdjgTuMWegTk2uPYLuvOlzRnwN+VnJ70uPl9w/3fELoMlvvpQWHHE7UCz9zv1lPNnHvTZO89DvYI2YyYN/HYPE3/o7N/YQwXz9XRtKGoncNYRiakggJwnEd7nnIpHcCME2sdlC3vtLozvosj4=
 
 os:
   - linux
@@ -24,6 +20,9 @@ os:
 osx_image: xcode8.2
 
 env:
+  global:
+    - secure: XYOQnrzQHfEqpv+/Byd4lYQhfJHidGp9EWwqmWt5P6ojVewALzrLd9GVruIbtrVfVQnG9kZoroUmeZtb//V6DwqgSI7j//DmTY/dd4er6OPOFl7f9WjXdvPyB9ixFu31Ujd5ELZLY2L0TAEqSSlDztovNEQlnoL3MrZfI4Dw3ZeV6UzhzI0XYgosjzwLzfg73P4Pz+lWourhhPF95ErnIjqel2rRB/cfyzo0rgA45nDDhzVEYdu/fnVhP/s2j98Wpo2gKccEDXt9Gk6Ovk2kYJfSKj5JmnavU6AiuiRD+Ozo5eyDaohkFVhkU4MVcDhrjSvaKpcYSMvH30dnXQKmNZmE2b79miQELEi1G799elx1k0apRKE/6c/4UqUMCUrAX6Qyin2+3t1P0iY0ir/4vn3cuguhSaJGrU2O8SNNwAN+AXpIGMHJss+zb7kcezI5dzRm4Tf0CPOW3676zXxgxEaqyS91WXMD+jpiiOV8V5I5EZpRd8j8GA6WuUZLLjN2lYLVQdkgPNr58lwHXKUvWouGdn/Md6C+IQuuupkcF5+q78r4WMJu+4eBA1iq5VwnQyLqQeIjlBOGHA3T3xrz8t6J52TovklV14TmIZjLs2uYe0sal39hKWsT9hQyrm5rbeuGbtxrdwYiHyxE4onlXdeOP/Bzooe+YJoZ1pXaa/c=
+    - secure: L/mA5QTZrQYYXI8+0YPqyvPsSJ89le1NWdoPmcHOjA/itwfaVczaULKT7u9tdpWyygFPM6mFv/wd/C+3nJaeHeXIDS/9r7MgJouSiKOKrEMDReyNiwE7KYwCxrIX7XKoN6FuHmJ8K6eifvP6cxNK7MhE2hq4nBgy1K1MYex439x04kKbrR14+EXCrNXytg9mQcHt6BZDxmWF9EOW372f5weBoVaTdU7pQuqE70xVatdfheThwoqD2w2ZMbluqSuD6QLgC+KSQpkcLLeoenwH+worIZswIGqJUVUcbMxGRosjOXwidYPJy+urqWivj3Z6wj1RWha5Ht8i0EXXAWYr9aIQ0qTCS9X+sw7UDeYms35lR2My9BYhCd8nXjrEviVFjrGVkOM2ZEcIEersiKrxAQRqmDzBXA31jb+VklDwXZIppeEbbpAx0WvBgRPeEffuAt6OT65rJsE2VssLYo/vAiuCob1z3X98h2vEqtmngsq/9q0Uk7a/qUahc3utMtHMh28OKVYqzu/OrkAnCJInOgHwDxXdjgTuMWegTk2uPYLuvOlzRnwN+VnJ70uPl9w/3fELoMlvvpQWHHE7UCz9zv1lPNnHvTZO89DvYI2YyYN/HYPE3/o7N/YQwXz9XRtKGoncNYRiakggJwnEd7nnIpHcCME2sdlC3vtLozvosj4=
   matrix:
     - TABLEAU_SDK_VERSION=10-2-0
 
@@ -32,9 +31,10 @@ before_install:
   - npm install node-gyp -g
   - npm install node-pre-gyp
   - npm install aws-sdk
+  - COMMIT_MESSAGE=$(git show -s --format=%B $TRAVIS_COMMIT | tr -d '\n')
   - PUBLISH_BINARY=false
   - if [[ $TRAVIS_BRANCH == `git describe --tags --always HEAD` ]]; then PUBLISH_BINARY=true; fi;
-  - if test "${TRAVIS_COMMIT_MESSAGE#*'[publish binary]'}" != "$TRAVIS_COMMIT_MESSAGE"; then PUBLISH_BINARY=true; fi;
+  - if test "${COMMIT_MESSAGE#*'[publish binary]'}" != "$COMMIT_MESSAGE"; then PUBLISH_BINARY=true; fi;
   - platform=$(uname -s | sed "y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/")
 install:
   - npm install --build-from-source
