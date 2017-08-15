@@ -11,7 +11,6 @@ addons:
 
 node_js:
   - '4'
-  - '6'
 
 os:
   - linux
@@ -25,10 +24,21 @@ env:
 
 before_install:
   - ./scripts/install-sdk.sh
-
+  - npm install node-gyp -g
+  - npm install node-pre-gyp
+  - npm install aws-sdk
+  - platform=$(uname -s | sed "y/ABCDEFGHIJKLMNOPQRSTUVWXYZ/abcdefghijklmnopqrstuvwxyz/")
 install:
-  - npm install
-
+  - npm install --build-from-source
+before_script:
+  - echo "Publishing native platform Binary Package? ->" $PUBLISH_BINARY
+  - if [[ $PUBLISH_BINARY == true ]]; then node-pre-gyp package publish || true; fi;
+  - node-pre-gyp clean
+  - node-gyp clean
 script:
-  - export MALLOC_CHECK_=1 # @todo: Fix double free / corruption error and remove this line.
-  - npm test
+  - INSTALL_RESULT=0
+  - if [[ $PUBLISH_BINARY == true ]]; then INSTALL_RESULT=$(npm install --fallback-to-build=false > /dev/null)$? || true; fi;
+  - if [[ $INSTALL_RESULT != 0 ]]; then echo "returned $INSTALL_RESULT";node-pre-gyp unpublish;false; fi
+  - node-pre-gyp clean
+after_success:
+  - node-pre-gyp info

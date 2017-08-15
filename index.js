@@ -1,7 +1,11 @@
 'use strict';
 
-var tableau = require('./build/Release/tableau'),
-    _ = require('underscore'),
+var binary = require('node-pre-gyp');
+var path = require('path');
+var binding_path = binary.find(path.resolve(path.join(__dirname,'./package.json')));
+var tableau = require(binding_path);
+
+var _ = require('underscore'),
     moment = require('moment'),
     enums = require('./enums'),
     priv = {};
