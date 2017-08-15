@@ -19,7 +19,7 @@
     "install": "node-pre-gyp install --fallback-to-build"
   },
   "binary": {
-    "module_name": "node-tableau-sdk",
+    "module_name": "tableau",
     "module_path": "./lib/",
     "host": "https://node-lambda.s3.amazonaws.com",
     "remote_path" : "./{name}/v{version}"
