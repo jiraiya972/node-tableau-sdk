@@ -10,6 +10,7 @@ addons:
       - llvm-toolchain-precise-3.6
     packages:
       - clang
+      - libc++-dev
 
 node_js:
   - '4'
