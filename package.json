@@ -16,6 +16,7 @@
   },
   "scripts": {
     "test": "mocha --retries 5 test/*.js",
+    "preinstall" : "scripts/install-sdk.sh tableausdk",
     "install": "node-pre-gyp install --fallback-to-build"
   },
   "binary": {
