@@ -10,9 +10,15 @@ if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
     wget --directory-prefix=$HOME/tableau-c-sdk https://downloads.tableau.com/tssoftware/Tableau-SDK-Linux-64Bit-${LOCAL_SDK_VERSION}.deb
     sudo dpkg -i $HOME/tableau-c-sdk/Tableau-SDK-Linux-64Bit-${LOCAL_SDK_VERSION}.deb
   else
-    wget -O $target.tar.gz https://downloads.tableau.com/tssoftware/Tableau-SDK-Linux-64Bit-${LOCAL_SDK_VERSION}.tar.gz
-    mkdir tableausdk && tar zxf tableausdk.tar.gz -C tableausdk --strip-components 1
-    rm tableausdk.tar.gz
+    if [[ ! -d "lib/${target}" && ! -e "$target.tar.gz" ]]; then
+      wget -O $target.tar.gz https://downloads.tableau.com/tssoftware/Tableau-SDK-Linux-64Bit-${LOCAL_SDK_VERSION}.tar.gz
+    fi
+    [ -d lib ] || mkdir lib
+    if [[ ! -d "$target" ]]; then
+      mkdir -p "$target" && tar zxf $target.tar.gz -C "$target" --strip-components 1
+      rm $target.tar.gz
+      mv $target lib
+    fi
   fi
 fi
 

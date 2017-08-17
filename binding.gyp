@@ -37,7 +37,7 @@
               "-stdlib=libc++"
             ],
             "cflags_cc+": [
-              "-I../tableausdk/include",
+              "-I../lib/tableausdk/include",
               "-std=c++0x"
             ],
             "link_settings": {
@@ -47,8 +47,8 @@
                 "-lTableauServer"
               ],
               "ldflags": [
-                "-L../tableausdk/lib64/tableausdk",
-                "-Wl,-rpath,'$$ORIGIN/../tableausdk/lib64/tableausdk'"
+                "-L../lib/tableausdk/lib64/tableausdk",
+                "-Wl,-rpath,'$$ORIGIN/tableausdk/lib64/tableausdk'"
               ]
             }
           }

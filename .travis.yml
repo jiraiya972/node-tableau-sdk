@@ -29,7 +29,7 @@ env:
     - TABLEAU_SDK_VERSION=10-2-0
 
 before_install:
-  - ./scripts/install-sdk.sh
+  - ./scripts/install-sdk.sh tableausdk
   - npm install node-gyp -g
   - npm install node-pre-gyp
   - npm install aws-sdk
