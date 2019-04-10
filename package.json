@@ -6,9 +6,11 @@
   "dependencies": {
     "moment": "^2.14.1",
     "underscore": "^1.8.3",
-    "node-pre-gyp" : "^0.6.x"
+    "node-pre-gyp": "^0.6.x"
   },
-  "bundledDependencies" : ["node-pre-gyp"],
+  "bundledDependencies": [
+    "node-pre-gyp"
+  ],
   "devDependencies": {
     "chai": "^1.10.0",
     "chai-fs": "^0.1.0",
@@ -17,14 +19,14 @@
   },
   "scripts": {
     "test": "mocha --retries 5 test/*.js",
-    "preinstall" : "scripts/install-sdk.sh tableausdk",
+    "preinstall": "scripts/install-sdk.sh tableausdk",
     "install": "node-pre-gyp install --fallback-to-build"
   },
   "binary": {
     "module_name": "tableau",
     "module_path": "./lib/",
     "host": "https://node-lambda.s3.amazonaws.com",
-    "remote_path" : "./{name}/v{version}"
+    "remote_path": "./{name}/v{version}"
   },
   "keywords": [
     "tableau",
