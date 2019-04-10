@@ -3,13 +3,14 @@
 #include "TableauException.h"
 
 #if defined(__APPLE__) && defined(__MACH__)
-#include <TableauExtract/TableauExtract_cpp.h>
+#include <TableauHyperExtract/TableauHyperExtract_cpp.h>
 #else
-#include "TableauExtract_cpp.h"
+#include "TableauHyperExtract_cpp.h"
 #endif
 
 namespace NodeTde {
 
+using v8::Context;
 using v8::Function;
 using v8::FunctionCallbackInfo;
 using v8::FunctionTemplate;
@@ -69,6 +70,7 @@ nativeRow* Row::GetRow() {
 
 void Row::New(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
   // Invoked as constructor: `new Row(...)`
   if (args.IsConstructCall()) {
@@ -85,7 +87,7 @@ void Row::New(const FunctionCallbackInfo<Value>& args) {
     const int argc = 1;
     Local<Value> argv[argc] = { args[0] };
     Local<Function> cons = Local<Function>::New(isolate, constructor);
-    args.GetReturnValue().Set(cons->NewInstance(argc, argv));
+    args.GetReturnValue().Set(cons->NewInstance(context, argc, argv).ToLocalChecked());
   }
 }
 

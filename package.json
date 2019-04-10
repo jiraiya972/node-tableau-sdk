@@ -1,7 +1,7 @@
 {
   "name": "tableau-sdk",
-  "version": "0.4.0-hj",
-  "description": "Create extracts and publish extracts to a Tableau Server using Node.js.",
+  "version": "1.2.0-hj",
+  "description": "Create Hyper extracts and use them in Tableau Products using Node.js.",
   "main": "index.js",
   "dependencies": {
     "moment": "^2.14.1",
@@ -12,7 +12,8 @@
   "devDependencies": {
     "chai": "^1.10.0",
     "chai-fs": "^0.1.0",
-    "mocha": "^2.4.5"
+    "fs-extra": "^7.0.1",
+    "mocha": "^5.2.0"
   },
   "scripts": {
     "test": "mocha --retries 5 test/*.js",
@@ -29,7 +30,7 @@
     "tableau",
     "extract",
     "api",
-    "tde",
+    "hyper",
     "data"
   ],
   "author": {
