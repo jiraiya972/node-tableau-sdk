@@ -20,7 +20,7 @@ if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
       ls -1 $target.tar.gz
       mkdir -p "$target" && tar zxf $target.tar.gz -C "$target" --strip-components 1
       rm $target.tar.gz
-      mv $target lib
+      cp -r $target lib
     fi
   fi
 fi
