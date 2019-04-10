@@ -38,7 +38,7 @@
             ],
             "cflags_cc+": [
               "-I../lib/tableausdk/include",
-              "-std=c++0x"
+              "-std=c++11"
             ],
             "link_settings": {
               "libraries": [
