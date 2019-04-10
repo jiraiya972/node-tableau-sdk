@@ -1,13 +1,13 @@
 sudo: required
 language: node_js
 
-dist: precise
+dist: xenial
 
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
-      - llvm-toolchain-precise-3.6
+      - llvm-toolchain-xenial-3.6
     packages:
       - clang
       - libc++-dev
