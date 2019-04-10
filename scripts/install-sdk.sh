@@ -12,7 +12,7 @@ if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
       sudo dpkg -i $HOME/tableau-c-sdk/extractapi-linux-x86_64-${LOCAL_SDK_VERSION}.deb
   else
     if [[ ! -d "lib/${target}" && ! -e "$target.tar.gz" ]]; then
-      wget -O $target.tar.gz https://downloads.tableau.com/tssoftware/Tableau-SDK-Linux-64Bit-${LOCAL_SDK_VERSION}.tar.gz
+      wget -O $target.tar.gz https://downloads.tableau.com/tssoftware/extractapi-linux-x86_64-${LOCAL_SDK_VERSION}.tar.gz
       ls -1 $target.tar.gz
       echo "Downloaded Tableau SDK"
     fi
