@@ -12,9 +12,12 @@ if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
   else
     if [[ ! -d "lib/${target}" && ! -e "$target.tar.gz" ]]; then
       wget -O $target.tar.gz https://downloads.tableau.com/tssoftware/Tableau-SDK-Linux-64Bit-${LOCAL_SDK_VERSION}.tar.gz
+      ls -1 $target.tar.gz
+      echo "Downloaded Tableau SDK"
     fi
     [ -d lib ] || mkdir lib
     if [[ ! -d "$target" ]]; then
+      ls -1 $target.tar.gz
       mkdir -p "$target" && tar zxf $target.tar.gz -C "$target" --strip-components 1
       rm $target.tar.gz
       mv $target lib
