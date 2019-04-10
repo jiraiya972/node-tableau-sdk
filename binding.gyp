@@ -48,7 +48,7 @@
               ],
               "ldflags": [
                 "-L../lib/tableausdk/lib64/tableausdk",
-                "-Wl,-rpath,'$$ORIGIN/tableausdk/lib64/tableausdk'"
+                "-Wl,-z,defs,-rpath,'$$ORIGIN/tableausdk/lib64/tableausdk'"
               ]
             }
           }
