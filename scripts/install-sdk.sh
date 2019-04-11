@@ -27,7 +27,7 @@ if [[ $TRAVIS_OS_NAME == 'linux' ]]; then
 fi
 
 # Install the SDK for OSX.
-if [ $TRAVIS_OS_NAME == 'osx' ]; then
+if [[ $TRAVIS_OS_NAME == 'osx' ]]; then
   wget --directory-prefix=$HOME/tableau-c-sdk https://downloads.tableau.com/tssoftware/extractapi-${LOCAL_SDK_VERSION}.dmg
   sudo hdiutil attach $HOME/tableau-c-sdk/extractapi-${LOCAL_SDK_VERSION}.dmg
   sudo ditto /Volumes/Tableau\ Hyper\ Extract\ API/Frameworks/ /Library/Frameworks/
