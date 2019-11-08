@@ -41,6 +41,7 @@ Extract::~Extract() {
 
 void Extract::Init(Local<Object> exports) {
   Isolate* isolate = exports->GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
   // Prepare constructor template
   Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
@@ -53,7 +54,7 @@ void Extract::Init(Local<Object> exports) {
   NODE_SET_PROTOTYPE_METHOD(tpl, "openTable", OpenTable);
   NODE_SET_PROTOTYPE_METHOD(tpl, "hasTable", HasTable);
 
-  constructor.Reset(isolate, tpl->GetFunction());
+  constructor.Reset(isolate, tpl->GetFunction(context));
   exports->Set(String::NewFromUtf8(isolate, "Extract"), tpl->GetFunction());
 }
 
