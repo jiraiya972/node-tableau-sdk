@@ -12,7 +12,7 @@
     wstring wErrorMessage = exc.GetMessage(); \
     string errorMessage(wErrorMessage.begin(), wErrorMessage.end()); \
     \
-    isolate->ThrowException(String::NewFromUtf8(isolate, errorMessage.c_str())); \
+    isolate->ThrowException(String::NewFromUtf8(isolate, errorMessage.c_str(), NewStringType::kNormal).ToLocalChecked()); \
     return; \
   } while (0) 
 

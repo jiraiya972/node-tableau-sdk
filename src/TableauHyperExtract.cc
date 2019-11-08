@@ -24,6 +24,7 @@ using v8::Object;
 using v8::Persistent;
 using v8::String;
 using v8::Value;
+using v8::NewStringType;
 using std::wstring;
 using std::string;
 using nativeExtract = Tableau::Extract;
@@ -41,10 +42,11 @@ Extract::~Extract() {
 
 void Extract::Init(Local<Object> exports) {
   Isolate* isolate = exports->GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
   // Prepare constructor template
   Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
-  tpl->SetClassName(String::NewFromUtf8(isolate, "Extract"));
+  tpl->SetClassName(String::NewFromUtf8(isolate, "Extract", NewStringType::kNormal).ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
   // Prototype
@@ -53,8 +55,10 @@ void Extract::Init(Local<Object> exports) {
   NODE_SET_PROTOTYPE_METHOD(tpl, "openTable", OpenTable);
   NODE_SET_PROTOTYPE_METHOD(tpl, "hasTable", HasTable);
 
-  constructor.Reset(isolate, tpl->GetFunction());
-  exports->Set(String::NewFromUtf8(isolate, "Extract"), tpl->GetFunction());
+  constructor.Reset(isolate, tpl->GetFunction(context).ToLocalChecked());
+  exports->Set(context, String::NewFromUtf8(
+      isolate, "Extract", NewStringType::kNormal).ToLocalChecked(),
+               tpl->GetFunction(context).ToLocalChecked()).FromJust();
 }
 
 void Extract::New(const FunctionCallbackInfo<Value>& args) {
@@ -64,7 +68,7 @@ void Extract::New(const FunctionCallbackInfo<Value>& args) {
   // Invoked as constructor: `new Extract(...)`
   if (args.IsConstructCall()) {
     // Get the path and convert to string.
-    String::Utf8Value v8path(args[0]->ToString());
+    String::Utf8Value v8path(isolate, args[0]->ToString(context).ToLocalChecked());
     string path = string(*v8path);
 
     wstring wpath(path.length(), L' ');
@@ -103,8 +107,9 @@ void Extract::Close(const FunctionCallbackInfo<Value>& args) {
 
 void Extract::HasTable(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
-  String::Utf8Value v8table(args[0]->ToString());
+  String::Utf8Value v8table(isolate, args[0]->ToString(context).ToLocalChecked());
   string table = string(*v8table);
   wstring wtable(table.length(), L' ');
 

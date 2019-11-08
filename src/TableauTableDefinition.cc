@@ -18,6 +18,7 @@ using v8::Object;
 using v8::Persistent;
 using v8::String;
 using v8::Value;
+using v8::NewStringType;
 using std::wstring;
 using std::string;
 using nativeTableDefinition = Tableau::TableDefinition;
@@ -38,10 +39,11 @@ TableDefinition::~TableDefinition() {
 
 void TableDefinition::Init(Local<Object> exports) {
   Isolate* isolate = exports->GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
   // Prepare constructor template
   Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
-  tpl->SetClassName(String::NewFromUtf8(isolate, "TableDefinition"));
+  tpl->SetClassName(String::NewFromUtf8(isolate, "TableDefinition", NewStringType::kNormal).ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
   // Prototype
@@ -55,8 +57,10 @@ void TableDefinition::Init(Local<Object> exports) {
   NODE_SET_PROTOTYPE_METHOD(tpl, "getColumnType", GetColumnType);
   NODE_SET_PROTOTYPE_METHOD(tpl, "getColumnCollation", GetColumnCollation);
 
-  constructor.Reset(isolate, tpl->GetFunction());
-  exports->Set(String::NewFromUtf8(isolate, "TableDefinition"), tpl->GetFunction());
+  constructor.Reset(isolate, tpl->GetFunction(context).ToLocalChecked());
+  exports->Set(context, String::NewFromUtf8(
+      isolate, "TableDefinition", NewStringType::kNormal).ToLocalChecked(),
+               tpl->GetFunction(context).ToLocalChecked()).FromJust();
 }
 
 void TableDefinition::InitObj(Local<Object> exports) {
@@ -92,10 +96,11 @@ void TableDefinition::New(const FunctionCallbackInfo<Value>& args) {
 
 void TableDefinition::NewInstance(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
   Local<ObjectTemplate> tpl = ObjectTemplate::New(isolate);
   tpl->SetInternalFieldCount(1);
-  Local<Object> instance = tpl->NewInstance();
+  Local<Object> instance = tpl->NewInstance(context).ToLocalChecked();
   TableDefinition::InitObj(instance);
 
   // Instantiate a new TableDefinition object and wrap it in our instance.
@@ -122,7 +127,10 @@ void TableDefinition::GetDefaultCollation(const FunctionCallbackInfo<Value>& arg
 }
 
 void TableDefinition::SetDefaultCollation(const FunctionCallbackInfo<Value>& args) {
-  int collation(args[0]->IntegerValue());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int collation(args[0]->IntegerValue(context).ToChecked());
   Tableau::Collation tabCol = static_cast<Tableau::Collation>(collation);
 
   TableDefinition* obj = ObjectWrap::Unwrap<TableDefinition>(args.Holder());
@@ -130,12 +138,15 @@ void TableDefinition::SetDefaultCollation(const FunctionCallbackInfo<Value>& arg
 }
 
 void TableDefinition::AddColumn(const FunctionCallbackInfo<Value>& args) {
-  String::Utf8Value v8ColName(args[0]->ToString());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  String::Utf8Value v8ColName(isolate, args[0]->ToString(context).ToLocalChecked());
   string colName = string(*v8ColName);
   wstring column(colName.length(), L' ');
   std::copy(colName.begin(), colName.end(), column.begin());
 
-  int typeInt(args[1]->IntegerValue());
+  int typeInt(args[1]->IntegerValue(context).ToChecked());
   Tableau::Type type = static_cast<Tableau::Type>(typeInt);
 
   try {
@@ -148,15 +159,18 @@ void TableDefinition::AddColumn(const FunctionCallbackInfo<Value>& args) {
 }
 
 void TableDefinition::AddColumnWithCollation(const FunctionCallbackInfo<Value>& args) {
-  String::Utf8Value v8ColName(args[0]->ToString());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  String::Utf8Value v8ColName(isolate, args[0]->ToString(context).ToLocalChecked());
   string colName = string(*v8ColName);
   wstring column(colName.length(), L' ');
   std::copy(colName.begin(), colName.end(), column.begin());
 
-  int typeInt(args[1]->IntegerValue());
+  int typeInt(args[1]->IntegerValue(context).ToChecked());
   Tableau::Type type = static_cast<Tableau::Type>(typeInt);
 
-  int collationInt(args[2]->IntegerValue());
+  int collationInt(args[2]->IntegerValue(context).ToChecked());
   Tableau::Collation collation = static_cast<Tableau::Collation>(collationInt);
 
   try {
@@ -179,21 +193,23 @@ void TableDefinition::GetColumnCount(const FunctionCallbackInfo<Value>& args) {
 
 void TableDefinition::GetColumnName(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
-  int columnNumber(args[0]->IntegerValue());
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
   wstring wColumnName;
 
   TableDefinition* obj = ObjectWrap::Unwrap<TableDefinition>(args.Holder());
   wColumnName = obj->nativeTableDefinition_->GetColumnName(columnNumber);
   std::string columnName(wColumnName.begin(), wColumnName.end());
 
-  args.GetReturnValue().Set(String::NewFromUtf8(isolate, columnName.c_str()));
+  args.GetReturnValue().Set(String::NewFromUtf8(isolate, columnName.c_str(), NewStringType::kNormal).ToLocalChecked());
 }
 
 void TableDefinition::GetColumnType(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
-  int columnNumber(args[0]->IntegerValue());
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
   TableDefinition* obj = ObjectWrap::Unwrap<TableDefinition>(args.Holder());
 
   args.GetReturnValue().Set(Number::New(isolate, obj->nativeTableDefinition_->GetColumnType(columnNumber)));
@@ -201,8 +217,9 @@ void TableDefinition::GetColumnType(const FunctionCallbackInfo<Value>& args) {
 
 void TableDefinition::GetColumnCollation(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
-  int columnNumber(args[0]->IntegerValue());
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
   TableDefinition* obj = ObjectWrap::Unwrap<TableDefinition>(args.Holder());
 
   args.GetReturnValue().Set(Number::New(isolate, obj->nativeTableDefinition_->GetColumnCollation(columnNumber)));

@@ -23,6 +23,7 @@ using v8::Object;
 using v8::Persistent;
 using v8::String;
 using v8::Value;
+using v8::NewStringType;
 using std::wstring;
 using std::string;
 using nativeRow = Tableau::Row;
@@ -40,10 +41,11 @@ Row::~Row() {
 
 void Row::Init(Local<Object> exports) {
   Isolate* isolate = exports->GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
   // Prepare constructor template
   Local<FunctionTemplate> tpl = FunctionTemplate::New(isolate, New);
-  tpl->SetClassName(String::NewFromUtf8(isolate, "Row"));
+  tpl->SetClassName(String::NewFromUtf8(isolate, "Row", NewStringType::kNormal).ToLocalChecked());
   tpl->InstanceTemplate()->SetInternalFieldCount(1);
 
   // Prototype
@@ -60,8 +62,10 @@ void Row::Init(Local<Object> exports) {
   NODE_SET_PROTOTYPE_METHOD(tpl, "setDuration", SetDuration);
   NODE_SET_PROTOTYPE_METHOD(tpl, "setSpatial", SetSpatial);
 
-  constructor.Reset(isolate, tpl->GetFunction());
-  exports->Set(String::NewFromUtf8(isolate, "Row"), tpl->GetFunction());
+  constructor.Reset(isolate, tpl->GetFunction(context).ToLocalChecked());
+  exports->Set(context, String::NewFromUtf8(
+      isolate, "Row", NewStringType::kNormal).ToLocalChecked(),
+               tpl->GetFunction(context).ToLocalChecked()).FromJust();
 }
 
 nativeRow* Row::GetRow() {
@@ -74,7 +78,7 @@ void Row::New(const FunctionCallbackInfo<Value>& args) {
 
   // Invoked as constructor: `new Row(...)`
   if (args.IsConstructCall()) {
-    TableDefinition* nodeTableDef = ObjectWrap::Unwrap<TableDefinition>(args[0]->ToObject());
+    TableDefinition* nodeTableDef = ObjectWrap::Unwrap<TableDefinition>(args[0]->ToObject(context).ToLocalChecked());
     nativeTableDefinition* tableDef = nodeTableDef->GetTableDefinition().get();
 
     Row* obj = new Row(tableDef);
@@ -97,47 +101,65 @@ void Row::Close(const FunctionCallbackInfo<Value>& args) {
 }
 
 void Row::SetNull(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
   obj->nativeRow_->SetNull(columnNumber);
 }
 
 void Row::SetInteger(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
-  int32_t integerValue(args[1]->Int32Value());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
+  int32_t integerValue(args[1]->Int32Value(context).ToChecked());
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
   obj->nativeRow_->SetInteger(columnNumber, integerValue);
 }
 
 void Row::SetLongInteger(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
-  int64_t integerValue(args[1]->IntegerValue());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
+  int64_t integerValue(args[1]->IntegerValue(context).ToChecked());
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
   obj->nativeRow_->SetLongInteger(columnNumber, integerValue);
 }
 
 void Row::SetDouble(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
-  double doubleValue(args[1]->NumberValue());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
+  double doubleValue(args[1]->NumberValue(context).ToChecked());
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
   obj->nativeRow_->SetDouble(columnNumber, doubleValue);
 }
 
 void Row::SetBoolean(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
-  bool boolValue(args[1]->BooleanValue());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
+  bool boolValue(args[1]->BooleanValue(isolate));
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
   obj->nativeRow_->SetBoolean(columnNumber, boolValue);
 }
 
 void Row::SetString(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
-  String::Utf8Value v8String(args[1]->ToString());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
+  String::Utf8Value v8String(isolate, args[1]->ToString(context).ToLocalChecked());
   string stringValue = string(*v8String);
   wstring wStringValue(stringValue.length(), L' ');
   std::copy(stringValue.begin(), stringValue.end(), wStringValue.begin());
@@ -147,8 +169,11 @@ void Row::SetString(const FunctionCallbackInfo<Value>& args) {
 }
 
 void Row::SetCharString(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
-  String::Utf8Value v8String(args[1]->ToString());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
+  String::Utf8Value v8String(isolate, args[1]->ToString(context).ToLocalChecked());
   string stringValue = string(*v8String);
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
@@ -156,10 +181,13 @@ void Row::SetCharString(const FunctionCallbackInfo<Value>& args) {
 }
 
 void Row::SetDate(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
-  int year(args[1]->IntegerValue());
-  int month(args[2]->IntegerValue());
-  int day(args[3]->IntegerValue());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
+  int year(args[1]->IntegerValue(context).ToChecked());
+  int month(args[2]->IntegerValue(context).ToChecked());
+  int day(args[3]->IntegerValue(context).ToChecked());
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
   try {
@@ -171,14 +199,17 @@ void Row::SetDate(const FunctionCallbackInfo<Value>& args) {
 }
 
 void Row::SetDateTime(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
-  int year(args[1]->IntegerValue());
-  int month(args[2]->IntegerValue());
-  int day(args[3]->IntegerValue());
-  int hour(args[4]->IntegerValue());
-  int min(args[5]->IntegerValue());
-  int sec(args[6]->IntegerValue());
-  int frac(args[7]->IntegerValue());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
+  int year(args[1]->IntegerValue(context).ToChecked());
+  int month(args[2]->IntegerValue(context).ToChecked());
+  int day(args[3]->IntegerValue(context).ToChecked());
+  int hour(args[4]->IntegerValue(context).ToChecked());
+  int min(args[5]->IntegerValue(context).ToChecked());
+  int sec(args[6]->IntegerValue(context).ToChecked());
+  int frac(args[7]->IntegerValue(context).ToChecked());
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
   try {
@@ -190,20 +221,26 @@ void Row::SetDateTime(const FunctionCallbackInfo<Value>& args) {
 }
 
 void Row::SetDuration(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
-  int day(args[1]->IntegerValue());
-  int hour(args[2]->IntegerValue());
-  int min(args[3]->IntegerValue());
-  int sec(args[4]->IntegerValue());
-  int frac(args[5]->IntegerValue());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
+  int day(args[1]->IntegerValue(context).ToChecked());
+  int hour(args[2]->IntegerValue(context).ToChecked());
+  int min(args[3]->IntegerValue(context).ToChecked());
+  int sec(args[4]->IntegerValue(context).ToChecked());
+  int frac(args[5]->IntegerValue(context).ToChecked());
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());
   obj->nativeRow_->SetDuration(columnNumber, day, hour, min, sec, frac);
 }
 
 void Row::SetSpatial(const FunctionCallbackInfo<Value>& args) {
-  int columnNumber(args[0]->IntegerValue());
-  String::Utf8Value v8String(args[1]->ToString());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  int columnNumber(args[0]->IntegerValue(context).ToChecked());
+  String::Utf8Value v8String(isolate, args[1]->ToString(context).ToLocalChecked());
   string stringValue = string(*v8String);
 
   Row* obj = ObjectWrap::Unwrap<Row>(args.Holder());

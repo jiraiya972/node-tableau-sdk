@@ -12,6 +12,7 @@
 
 namespace NodeTde {
 
+using v8::Context;
 using v8::Function;
 using v8::FunctionCallbackInfo;
 using v8::FunctionTemplate;
@@ -25,8 +26,10 @@ using v8::ObjectTemplate;
 using v8::Persistent;
 using v8::String;
 using v8::Value;
+using v8::NewStringType;
 using std::wstring;
 using std::string;
+using node::ObjectWrap;
 using nativeExtract = Tableau::Extract;
 using nativeTable = Tableau::Table;
 using nativeTableDefinition = Tableau::TableDefinition;
@@ -53,7 +56,10 @@ void Table::GetTableDefinition(const FunctionCallbackInfo<Value>& args) {
 }
 
 void Table::Insert(const FunctionCallbackInfo<Value>& args) {
-  Row* nodeRow = ObjectWrap::Unwrap<Row>(args[0]->ToObject());
+  Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
+
+  Row* nodeRow = ObjectWrap::Unwrap<Row>(args[0]->ToObject(context).ToLocalChecked());
   nativeRow* row = nodeRow->GetRow();
 
   Table* obj = ObjectWrap::Unwrap<Table>(args.Holder());
@@ -62,14 +68,15 @@ void Table::Insert(const FunctionCallbackInfo<Value>& args) {
 
 void Table::NewInstance(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
   Local<ObjectTemplate> tpl = ObjectTemplate::New(isolate);
   tpl->SetInternalFieldCount(1);
-  Local<Object> instance = tpl->NewInstance();
+  Local<Object> instance = tpl->NewInstance(context).ToLocalChecked();
   Table::Init(instance);
 
   // Instantiate a new Table object and wrap it in our instance.
-  String::Utf8Value v8table(args[0]->ToString());
+  String::Utf8Value v8table(isolate, args[0]->ToString(context).ToLocalChecked());
   string table = string(*v8table);
   wstring wtable(table.length(), L' ');
   std::copy(table.begin(), table.end(), wtable.begin());
@@ -84,31 +91,32 @@ void Table::NewInstance(const FunctionCallbackInfo<Value>& args) {
 
 void Table::NewInstanceFromDefinition(const FunctionCallbackInfo<Value>& args) {
   Isolate* isolate = args.GetIsolate();
+  Local<Context> context = isolate->GetCurrentContext();
 
   // Check for a table name argument.
   if (!args[0]->IsString()) {
-    isolate->ThrowException(String::NewFromUtf8(isolate, "You must provide a table name of 'Extract' when adding a table."));
+    isolate->ThrowException(String::NewFromUtf8(isolate, "You must provide a table name of 'Extract' when adding a table.", NewStringType::kNormal).ToLocalChecked());
     return;
   }
 
   // Check for table definition argument.
   if (!args[1]->IsObject()) {
-    isolate->ThrowException(String::NewFromUtf8(isolate, "You must provide a table definition when adding a table."));
+    isolate->ThrowException(String::NewFromUtf8(isolate, "You must provide a table definition when adding a table.", NewStringType::kNormal).ToLocalChecked());
     return;
   }
 
   Local<ObjectTemplate> tpl = ObjectTemplate::New(isolate);
   tpl->SetInternalFieldCount(1);
-  Local<Object> instance = tpl->NewInstance();
+  Local<Object> instance = tpl->NewInstance(context).ToLocalChecked();
   Table::Init(instance);
 
   // Instantiate a new Table object and wrap it in our instance.
-  String::Utf8Value v8table(args[0]->ToString());
+  String::Utf8Value v8table(isolate, args[0]->ToString(context).ToLocalChecked());
   string table = string(*v8table);
   wstring wtable(table.length(), L' ');
   std::copy(table.begin(), table.end(), wtable.begin());
 
-  TableDefinition* nodeTableDef = ObjectWrap::Unwrap<TableDefinition>(args[1]->ToObject());
+  TableDefinition* nodeTableDef = ObjectWrap::Unwrap<TableDefinition>(args[1]->ToObject(context).ToLocalChecked());
   nativeTableDefinition* tableDef = nodeTableDef->GetTableDefinition().get();
 
   Extract* obj = ObjectWrap::Unwrap<Extract>(args.Holder());
