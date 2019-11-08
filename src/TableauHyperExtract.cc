@@ -54,8 +54,8 @@ void Extract::Init(Local<Object> exports) {
   NODE_SET_PROTOTYPE_METHOD(tpl, "openTable", OpenTable);
   NODE_SET_PROTOTYPE_METHOD(tpl, "hasTable", HasTable);
 
-  constructor.Reset(isolate, tpl->GetFunction(context)->.ToLocalChecked());
-  exports->Set(String::NewFromUtf8(isolate, "Extract"), tpl->GetFunction(context)->.ToLocalChecked());
+  constructor.Reset(isolate, tpl->GetFunction(context)->ToLocalChecked());
+  exports->Set(String::NewFromUtf8(isolate, "Extract"), tpl->GetFunction(context)->ToLocalChecked());
 }
 
 void Extract::New(const FunctionCallbackInfo<Value>& args) {
