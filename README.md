@@ -8,7 +8,7 @@ Extracts for use in Tableau Desktop, Tableau Server, or Tableau Online using Jav
 ## Installation
 
 __Warning__: Under active development. Currently only known to work on OSX and
-Ubuntu using LTS versions of node (v6, v8, v10). Check the issue queue for updates
+Ubuntu using LTS versions of node (v6, v8, v10, v12). Check the issue queue for updates
 or to contribute improvements!
 
 1. Install the [C/C++ Tableau SDK](https://onlinehelp.tableau.com/current/api/extract_api/en-us/Extract/extract_api_installing.htm#downloading)
